@@ -14,7 +14,11 @@ class WSF {
 
   async fetchCacheDate() {
     var action = "cacheflushdate";
-    return this.fetch(action);
+    const response = await this.fetch(action);
+    this.data = {
+      last_updated: parseAndConvertTimestamp(response)
+    };
+    return this.data;
   }
 
   async fetch(action) {
@@ -23,13 +27,10 @@ class WSF {
     const suffix = `apiaccesscode=${this.api_key}`;
 
     var url = `${prefix}/${action}?${suffix}`;
-    
+    console.log(url);
     try {
       const response = await axios.get(url);
-      this.data = {
-        last_updated: parseAndConvertTimestamp(response.data)
-      };
-      return this.data;
+      return response.data;
     } catch (error) {
       console.log("Error:", error);
       throw error;

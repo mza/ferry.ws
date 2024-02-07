@@ -22,7 +22,7 @@ const wsf = new WSF(apiaccesscode);
 app.get('/', (req, res) => {
   wsf.fetchCacheDate().then(data => {
     console.log(data);
-    res.render('index');
+    res.render('index', { last_updated: data.last_updated });
   });
 });
 

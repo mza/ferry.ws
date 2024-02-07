@@ -26,9 +26,8 @@ class WSF {
     
     try {
       const response = await axios.get(url);
-      const dateObject = parseAndConvertTimestamp(response.data);
       this.data = {
-        last_updated: `${dateObject.getFullYear()}-${dateObject.getMonth() + 1}-${dateObject.getDate()} ${dateObject.getHours()}:${dateObject.getMinutes()}:${dateObject.getSeconds()}`
+        last_updated: parseAndConvertTimestamp(response.data)
       };
       return this.data;
     } catch (error) {

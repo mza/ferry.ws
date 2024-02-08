@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { parseAndConvertTimestamp } from './dateConverter.mjs';
+import { parseAndConvertTimestamp } from './lib/dateConverter.mjs';
 import { fetchJSONFromURL } from './fetch.mjs';
 
 class WSF {

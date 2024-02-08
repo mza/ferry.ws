@@ -1,4 +1,4 @@
-import { parseAndConvertTimestamp } from './dateConverter.mjs';
+import { parseAndConvertTimestamp } from './lib/dateConverter.mjs';
 import { fetchJSONFromURL } from './fetch.mjs';
 
 const apiaccesscode = "333bb279-f90c-491b-88e3-f82cddb6599e";
@@ -8,7 +8,7 @@ const suffix = `apiaccesscode=${apiaccesscode}`;
 
 // Last updated:
 
-var action = "cacheflushdate";
+var action = "schedroutes";
 var url = `${prefix}/${action}?${suffix}`;
 
 fetchJSONFromURL(url)

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { parseAndConvertTimestamp, convertToTime } from './lib/dateConverter.mjs';
+import { parseAndConvertTimestamp, convertToTime, convertToDepartureArrivalIndicator, convertToAnnotation } from './lib/dateConverter.mjs';
 
 class WSF {
   constructor(api_key) {
@@ -37,12 +37,20 @@ class WSF {
 
   parseSailings(schedules) {
     schedules.forEach((schedule, index) => {
-        console.log(`Schedule ID: ${schedule.ScheduleID}, Route ID: ${schedule.RouteID}, Description: ${schedule.SailingDescription}`);
+        // console.log(`Schedule ID: ${schedule.ScheduleID}, Route ID: ${schedule.RouteID}, Description: ${schedule.SailingDescription}`);
         schedule.Journs.forEach(journey => {
-            console.log(journey.VesselName);
-            journey.TerminalTimes.forEach(terminalTime => {
+            journey.TerminalTimes.forEach(terminalTime => {              
                 if (!terminalTime.IsNA) {
-                  console.table([ terminalTime.TerminalDescription, convertToTime(terminalTime.Time)]);
+                  var xml_response = "";
+                  xml_response += "<sailing>";
+                  xml_response += "<direction>" + schedule.SailingDescription + "</direction>";
+                  xml_response += "<vessel>" + journey.VesselName + "</vessel>";
+                  xml_response += "<terminal>" + terminalTime.TerminalDescription + "</terminal>";
+                  xml_response += "<time>" + convertToTime(terminalTime.Time) + "</time>";
+                  xml_response += "<type>" + convertToDepartureArrivalIndicator(terminalTime.DepArrIndicator) + "</type>";
+                  xml_response += "<notes>" + convertToAnnotation(terminalTime.Annotations) + "</notes>";
+                  xml_response += "</sailing>"
+                  console.log(xml_response);
                 }
             });
         });

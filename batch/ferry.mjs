@@ -12,10 +12,22 @@ wsf.fetchCacheDate().then(data => {
 // });
 
 wsf.fetchValidDateRange().then(data => {
-  console.log(data);
+  // console.log(data);
 });
 
-wsf.fetchTerminalsForDate("2024-02-08").then(data => {
+// wsf.fetchTerminalsForDate("2024-02-08").then(data => {
+  // console.log(data);
+// });
+
+// wsf.fetchTerminalsAndMatesForDate("2024-02-08").then(data => {
+  // console.log(data);
+// });
+
+// wsf.fetchRoutesForDate("2024-02-08").then(data => {
+  // console.log(data);
+// });
+
+wsf.fetchActiveSeasons().then(data => {
   console.log(data);
 });
 

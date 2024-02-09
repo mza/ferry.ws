@@ -34,6 +34,28 @@ class WSF {
     return this.data;
   }
 
+  async fetchActiveSeasons() {
+    var action = "activeseasons";
+    const response = await this.fetch(action);
+    console.log(response);
+    var seasons = []
+
+    response.forEach(season => {
+      seasons.push({
+        id: season.ScheduleID, 
+        name: season.ScheduleName,
+        start: parseAndConvertTimestamp(season.ScheduleStart),
+        end: parseAndConvertTimestamp(season.ScheduleStart),
+      })
+    });
+
+    this.data = {
+      seasons: seasons
+    };
+
+    return this.data;
+  }
+
   async fetchTerminalsForDate(date) {
     var action = "terminals/" + date;
     const response = await this.fetch(action);
@@ -52,6 +74,51 @@ class WSF {
 
     return this.data;
   }
+
+  async fetchRoutesForDate(date) {
+    var action = "routes/" + date;
+    const response = await this.fetch(action);
+
+    var routes = []
+
+    response.forEach(route => {
+      routes.push({
+        id: route.RouteID,
+        abbreviation: route.RouteAbbrev,
+        name: route.Description,
+        region_id: route.RegionID,
+      });
+    });
+
+    this.data = {
+      routes: routes
+    };
+
+    return this.data;
+  }
+
+  async fetchTerminalsAndMatesForDate(date) {
+    var action = "terminalsandmates/" + date;
+    const response = await this.fetch(action);
+
+    var terminals = []
+
+    response.forEach(terminal => {
+      terminals.push({
+        departing_id: terminal.DepartingTerminalID,
+        departing_name: terminal.DepartingDescription,
+        arrival_id: terminal.ArrivingTerminalID,
+        arrival_name: terminal.ArrivingDescription
+      });
+    });
+
+    this.data = {
+      terminals: terminals
+    };
+
+    return this.data;
+  }
+
 
   async fetchSailings(routeId) {
     var action = "sailings/" + routeId;

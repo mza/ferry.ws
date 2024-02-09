@@ -7,8 +7,16 @@ wsf.fetchCacheDate().then(data => {
   console.log(data);
 });
 
-wsf.fetchSailings(2359).then(data => {
-  // console.log(JSON.stringify(data.sailings, null, 2));
+// wsf.fetchSailings(2359).then(data => {
+//   // console.log(JSON.stringify(data.sailings, null, 2));
+// });
+
+wsf.fetchValidDateRange().then(data => {
+  console.log(data);
+});
+
+wsf.fetchTerminalsForDate("2024-02-08").then(data => {
+  console.log(data);
 });
 
 

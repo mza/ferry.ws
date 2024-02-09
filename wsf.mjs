@@ -22,6 +22,37 @@ class WSF {
     return this.data;
   }
 
+  async fetchValidDateRange() {
+    var action = "validdaterange";
+    const response = await this.fetch(action);
+
+    this.data = {
+      date_from: parseAndConvertTimestamp(response.DateFrom),
+      date_thru: parseAndConvertTimestamp(response.DateThru),
+    };
+
+    return this.data;
+  }
+
+  async fetchTerminalsForDate(date) {
+    var action = "terminals/" + date;
+    const response = await this.fetch(action);
+    var terminals = []
+
+    response.forEach(terminal => {
+      terminals.push({
+        id: terminal.TerminalID,
+        name: terminal.Description
+      });
+    });
+
+    this.data = {
+      terminals: terminals
+    };
+
+    return this.data;
+  }
+
   async fetchSailings(routeId) {
     var action = "sailings/" + routeId;
     const response = await this.fetch(action);

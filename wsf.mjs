@@ -162,7 +162,7 @@ class WSF {
     const response = await this.fetch(action);
 
     var sailings = [];
-    console.log(JSON.stringify(response, null, 2));
+    // console.log(JSON.stringify(response, null, 2));
     response.forEach((schedule) => {
       schedule.Journs.forEach(journey => {
         journey.TerminalTimes.forEach(terminalTime => {

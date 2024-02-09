@@ -19,8 +19,10 @@ wsf.fetchScheduledRoutes().then(data => {
   routes = data;
 });
 
+var sailings = [];
+
 wsf.fetchSailings(2359).then(data => {
-  console.log(JSON.stringify(data.sailings, null, 2));
+  sailings = data;
 });
 
 

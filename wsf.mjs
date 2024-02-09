@@ -37,7 +37,7 @@ class WSF {
   async fetchActiveSeasons() {
     var action = "activeseasons";
     const response = await this.fetch(action);
-    console.log(response);
+
     var seasons = []
 
     response.forEach(season => {
@@ -45,7 +45,7 @@ class WSF {
         id: season.ScheduleID, 
         name: season.ScheduleName,
         start: parseAndConvertTimestamp(season.ScheduleStart),
-        end: parseAndConvertTimestamp(season.ScheduleStart),
+        end: parseAndConvertTimestamp(season.ScheduleEnd),
       })
     });
 
@@ -54,6 +54,43 @@ class WSF {
     };
 
     return this.data;
+  }
+
+  async fetchScheduledRoutes() {
+    var action = "schedroutes";
+    const response = await this.fetch(action);
+    var routes = []
+
+    response.forEach(route => {
+
+      var route_object = {
+        id: route.ScheduleID,
+        routeId: route.SchedRouteID,
+        abbreviation: route.RouteAbbrev,
+        name: route.Description,
+        contigency: route.ContingencyOnly
+      };
+
+      if (route.ContingencyOnly) {
+        route_object.contingencies = [];
+        route.ContingencyAdj.forEach(contingency => {
+          route_object.contingencies.push({
+            // pretty sure these dates are not valid or accurate, but adding anyway
+            date_from: convertToTime(contingency.DateFrom),
+            date_thru: convertToTime(contingency.DateThru)
+          })
+        })
+      }
+
+      routes.push(route_object);
+
+    });
+
+    this.data = {
+      routes: routes
+    };
+
+    return this.data;  
   }
 
   async fetchTerminalsForDate(date) {
@@ -124,10 +161,33 @@ class WSF {
     var action = "sailings/" + routeId;
     const response = await this.fetch(action);
 
-    this.parseSailings(response);
+    var sailings = [];
+    console.log(JSON.stringify(response, null, 2));
+    response.forEach((schedule) => {
+      schedule.Journs.forEach(journey => {
+        journey.TerminalTimes.forEach(terminalTime => {
+          if (!terminalTime.IsNA) {
+            sailings.push({
+              id: schedule.SailingID,
+              schedule_id: schedule.ScheduleID,
+              route_id: schedule.SchedRouteID,
+              journey_id: journey.JourneyID,
+              date_from: schedule.ActiveDateRanges[0].DateFrom,
+              date_thru: schedule.ActiveDateRanges[0].DateThru,
+              direction: schedule.SailingDescription,
+              vessel: journey.VesselName,
+              terminal: terminalTime.TerminalDescription,
+              time: convertToTime(terminalTime.Time),
+              type: convertToDepartureArrivalIndicator(terminalTime.DepArrIndicator),
+              notes: convertToAnnotation(terminalTime.Annotations)
+            });
+          }
+        });
+      });
+    });
 
     this.data = {
-      sailings: response
+      sailings: sailings
     };
     
     return this.data;
@@ -148,7 +208,7 @@ class WSF {
                   xml_response += "<type>" + convertToDepartureArrivalIndicator(terminalTime.DepArrIndicator) + "</type>";
                   xml_response += "<notes>" + convertToAnnotation(terminalTime.Annotations) + "</notes>";
                   xml_response += "</sailing>"
-                  console.log(xml_response);
+                  // console.log(xml_response);
                 }
             });
         });
